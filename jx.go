@@ -44,42 +44,60 @@ func (j *JX) Get(key string) *JX {
 	return &JX{new(interface{})}
 }
 
-func (j *JX) Bool() (r bool) {
+func (j *JX) Bool(key ...string) (r bool) {
+	if len(key) > 0 {
+		return j.Get(key[0]).Bool()
+	}
 	if v, ok := j.x.(bool); ok {
 		return v
 	}
 	return r
 }
 
-func (j *JX) String() (r string) {
+func (j *JX) String(key ...string) (r string) {
+	if len(key) > 0 {
+		return j.Get(key[0]).String()
+	}
 	if v, ok := j.x.(string); ok {
 		return v
 	}
 	return r
 }
 
-func (j *JX) Int() (r int) {
+func (j *JX) Int(key ...string) (r int) {
+	if len(key) > 0 {
+		return j.Get(key[0]).Int()
+	}
 	if v, ok := j.x.(int); ok {
 		return v
 	}
 	return r
 }
 
-func (j *JX) Float() (r float64) {
+func (j *JX) Float(key ...string) (r float64) {
+	if len(key) > 0 {
+		return j.Get(key[0]).Float()
+	}
 	if v, ok := j.x.(float64); ok {
 		return v
 	}
 	return r
 }
 
-func (j *JX) Map() (r map[string]interface{}) {
+func (j *JX) Map(key ...string) (r map[string]interface{}) {
+	if len(key) > 0 {
+		return j.Get(key[0]).Map()
+	}
 	if v, ok := j.x.(map[string]interface{}); ok {
 		return v
 	}
 	return r
 }
 
-func (j *JX) Slice() (r []interface{}) {
+func (j *JX) Slice(key ...string) (r []interface{}) {
+	if len(key) > 0 {
+		return j.Get(key[0]).Slice()
+	}
 	if v, ok := j.x.([]interface{}); ok {
 		return v
 	}
@@ -91,7 +109,10 @@ type Item struct {
 	*JX
 }
 
-func (j *JX) MapIter() chan Item {
+func (j *JX) MapIter(key ...string) chan Item {
+	if len(key) > 0 {
+		return j.Get(key[0]).MapIter()
+	}
 	ch := make(chan Item)
 	go func() {
 		for k, v := range j.Map() {
@@ -102,7 +123,10 @@ func (j *JX) MapIter() chan Item {
 	return ch
 }
 
-func (j *JX) SliceIter() chan *JX {
+func (j *JX) SliceIter(key ...string) chan *JX {
+	if len(key) > 0 {
+		return j.Get(key[0]).SliceIter()
+	}
 	ch := make(chan *JX)
 	go func() {
 		for _, v := range j.Slice() {
@@ -113,6 +137,9 @@ func (j *JX) SliceIter() chan *JX {
 	return ch
 }
 
-func (j *JX) Decode(into interface{}) error {
+func (j *JX) Decode(into interface{}, key ...string) error {
+	if len(key) > 0 {
+		return j.Get(key[0]).Decode(into)
+	}
 	return mapstructure.Decode(j.Map(), into)
 }
